@@ -1,0 +1,118 @@
+Memcache
+
+I. Evolution Process
+• Single cluster of web servers and cache servers:
+	- Read heavy
+	- Wide fan-out
+
+• Multiple frontend clusters (web servers + cache servers) -> region:
+	- Data replication and consistency
+
+• Multiple regions:
+	- Data replication and consistency
+
+II. Single Cluster
+
+1. Problems:
+	- Latency of fetching cached data
+	- Load imposed on the backend due to a cache miss
+
+2. Latency
+• Consistent hashing to distribute keys
+
+• All-to-all: all web servers talk to all memcache servers
+	- A single cache serer can become a bottleneck. Can replicate data but has a lot of memory inefficiencies
+
+• Focus on operations of memcache client:
+	- Maintain a map of all available memcache servers, which is updated through an auxiliary configuration system (How?)
+
+(1) Parallel requests and batching
+	- Client constructs a DAG to represent data dependency for a user request
+	- Independent tasks are batched and parallelized (similar to what Spark does when executing jobs)
+
+(2) Client-server communication
+	- mcrouter: It plays the role of routing requests to/from memcached servers, making clients stateless (Benefits?)
+	- get() uses UDP for speed
+	- set() and delete() uses TCP to guarantee reliability but connections are coalesced (at mcrouter) to reduce overhead
+
+(3) Incast congestion
+	- Wide fan-out, when responses from all memcached servers come in at the same time, they may overwhelm components like rack and cluster switches
+	- Use sliding window to control requests in-flight, AIMD
+	- Little's Law: number of requests queued in the server is directly proportional to the average time a request takes to process. When the queue gets too large, page fault rate would increase.
+	- Need to find a sweet spot for the window size to achieve a balance between a) request processing time b) avoiding incast congestion
+
+3. Load
+(1) Leases
+	- Stale set(): invalidates a lease upon delete to avoid a stale value being set in the cache [RACE]
+	- Thundering herds: upon cache miss due to cache invalidation, not every read client will have to insert the latest value into the cache, only one does, the others will wait
+	- Trade data freshness for latency: some applications might not need the most up-to-date data -> allow the option to progress with stale data
+
+4. Cache Retention
+• Pools for different access patterns - partitioning by access pattern
+• Replication for load balancing and hot swapping
+	- Replication over sharding in order to distribute workload [replication v.s. shard]
+		@ Replication v.s. shard: depends on whether the most time is spent per key or per request. If per key is expensive, prefer sharding. If per request is expensive, prefer replication.
+	- Invalidation fanout to guarantee consistency
+
+5. Failure Handling
+	- Divert to idle server (Gutter) or another cluster
+	- Avoid rehash -> potential cascading failure by overloading other cache servers
+	- For widespread failure -> redirect requests to alternate clusters
+
+III. Region: Replication of clusters
+• Contained failure domain, tractable network configuration, added layer of abstraction to reduce incast congestion
+• (Difference between adding web and memcached servers in a cluster v.s. replicating clusters?)
+
+1. Cache invalidation
+	- Use invalidation daemon - mcsqueal - to detect commit and make cache invalidation a part of DB transaction
+	- Batched (mcrouter) to reduce packets between backend cluster and frontend cluster. Intra-cluster bandwidth >> inter-cluster bandwidth so that fanning out within frontend clusters by mcrouter is better for network traffic.
+	* A web server that modifies its data also sends invalidation to its own cluster to ensure read-after-write semantics for a single user request
+
+2. Regional Pools
+	- Each cluster independently caches data depending on the mix of the user requests that are sent to it. If user requests are randomly routed to all available frontend clusters then the cached data will be roughly the same across clusters. -> Allow hot-swapping, but over-replicating data can be memory inefficient.
+	- Let multiple frontend clusters share the same set of memcache servers
+
+	- Replication trades more memcached servers for less inter-cluster bandwidth, lower latency, and better fault tolerance.
+	- For some data, it's more cost efficient to forgo the advantages of replication and to just have a single copy per region. (e.g. the large, rarely accessed items)
+	- [Replicate or not really depends on the nature of the items]
+	- [Crossing cluster boundaries incurs more latency. Intra-cluster bandwidth >> inter-cluster bandwidth]
+
+3. Cold Cluster Warm-up
+	- To have a saturated cache from scratch faster
+	- [RACE]: cold cluster invalidation has not reached warm cluster yet, cold cluster then issues a read, cache miss, and read from warm cluster -> stale set(): 
+		@ solution is to have a holdoff time in the cold cluster after delete() takes place - rejects set() for 2 seconds [data driven]
+		@ Why not mark key as invalid?
+
+	(Why warm up on demand?)
+
+IV. Cross-region Replication
+	- Geographic replication: a) reduce latency b) fault tolerant c) cheaper
+	- DB: master slave
+
+1. Write from master DB
+	- Invalidation by regional slave replica instead of by master, using McSqueal
+	- The decision to invalidate cache using storage cluster daemon avoids premature invalidation and stale data from slave replica DB being written to cache [RACE]
+	- Notice that this only ensures in-region consistency: before the replication from master reaches the slave, the slave DB and cache will both have stale data, but it's consistent, because no updates have been issued from the local replica
+
+2. Write from slave DB
+	- [RACE] Before the master write has propagated to the local slave, cache miss, reads local slave and stale set()
+	- Invalidates regional cache immediately to make it consistent within the region (an update has been issued from the region)
+	- Sets remote marker and rejects set()'s to the regional cache, write to master DB
+	- Presence of remote marker will re-direct DB reads to master DB upon cache misses
+	- Master replication will arrive and delete remote marker upon commit
+	- Trade latency for consistency
+
+	* Potential stale set() triggered by concurrent writes to slave DB replica
+
+V. Single Server Optimizations
+(To be added)
+
+8. Upshot
+• Data driven decision / optimization:
+	- Experiments to pinpoint the optimal solution
+	- Sliding window, holdoff time, lease renewal rate etc.
+
+• Memcache v.s. Dynamo
+	- Both are scalable, distributed key-value store
+	- Dynamo: well suited for write-intensive workload for small data sizes
+	- Memcache: read intensive workloads
