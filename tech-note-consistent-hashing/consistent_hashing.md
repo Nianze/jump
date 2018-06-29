@@ -22,7 +22,7 @@ With this, if a server fails, only keys that need to be relocated are those that
 
 ### Trivia
 
-Authors of the 1997 consistent hashing paper went on to found Akamai and building big CDNs with consistent caching.
+Authors of the 1997 consistent hashing paper went on to found Akamai and build big CDNs with consistent hashing.
 
 ### Further reading
 
