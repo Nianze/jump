@@ -12,7 +12,7 @@
 
 ### Scheduled
 
-* 070618: Comparison?
+* 070618: BigTable
 
 ### Ideas
 
