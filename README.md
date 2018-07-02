@@ -2,9 +2,9 @@
 
 ### Meetups
 
-* [060118: Raft consensus algorithm](meetup/raft-060118)
-* [061518: Memcache](meetup/memcache-061518)
-* [062918: Dynamo](meetup/dynamo-062918)
+* [060118: Raft consensus algorithm](meetup/180601-raft)
+* [061518: Memcache](meetup/180615-memcache)
+* [062918: Dynamo](meetup/180629-dynamo)
 
 ### Tech notes
 
