@@ -1,4 +1,4 @@
-# jump
+# Jump
 
 ### Meetups
 
