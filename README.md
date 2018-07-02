@@ -2,18 +2,20 @@
 
 ### Meetups
 
-* [060118: Raft consensus algorithm](raft-060118)
-* [061518: memcache](memcache-061518)
+* [060118: Raft consensus algorithm](meetup/raft-060118)
+* [061518: Memcache](meetup/memcache-061518)
+* [062918: Dynamo](meetup/dynamo-062918)
 
 ### Tech notes
 
-* [Consistent hashing](tech-note-consistent-hashing)
+* [Consistent hashing](notes/tech-note-consistent-hashing)
 
 ### Scheduled
 
-* 062918: Dynamo
+* 070618: Comparison?
 
 ### Ideas
 
 * Design pattern, C++, [course umich](http://umich.edu/~eecs381/)
 * (More) Effective (Modern) C++
+* BB tech stack
