@@ -1,4 +1,4 @@
-#Dynamo
+# Dynamo
 
 As a highly available and scalable distributed data store, the design principles of Dynamo features high availability for writes (via reconciliation during reads), incremental scalability (consistent hashing), symmetry, decentralization, and heterogeneity (via virtual nodes).
 
