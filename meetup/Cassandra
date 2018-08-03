@@ -1,0 +1,196 @@
+Some comparing db
+  Redis:
+    key/value store
+    write in C
+    light and fast
+    value: can be bit array, hash, list(very generic)
+    like a datastructure server 
+    In Memory(set it limit on scall)
+    single master db
+    example: vote counting for millions 
+    optional persistance (since it is in memory)
+  Hadoop:
+    it is based on file system
+   
+Cassandra Why?
+   Scale(it is fundamantly thinking when it is designed)
+   Business - friendly 
+   richer data model
+   Innovation
+   Community 
+   Fast Write 
+   Separation between data model and sharding ( JUST THINK ABOUT DATA MODEL AND IT GOT BE DISTRIBUTED )
+   
+Data Model:
+   Column: 
+      the fundamental in data storage
+      the smallest thing you can read and write
+      it is a (name value timestamp)
+      
+   Super Column:
+      a hash map of cloumns 
+      Key:
+        ColmnName1: Column
+        ColmnName2: Column
+        ColmnName3: Column
+        
+   Super Column Family:
+      key: superColumn superColumn
+      key: superColumn superColumn
+      key: superColumn superColumn
+      
+   KeySapce:   
+    　Column Family
+      Column Family
+      Super Column Family
+      Super Colymn Family
+   
+   Cluster:   
+      keyspace:
+      keyspace:
+   
+   Why Column Family:
+      A richer Model
+      Write Performance
+      The building shapes the structure
+
+Data Modeling Patterns:
+      ColumnFamilies are not tables
+      ColumnFamilies are wide
+      ColumnFamilies can be narrow also
+      the database does not join　
+      you only get one index
+      Column Family as Index:
+        row key is index value 
+        column values are entity row keys
+        example:
+      
+      Materialized View:
+        Based on entity data
+        A seperate column family
+        Entity data organized by index key
+      
+      Time Series:
+        row key is time indentifier
+        Column value are event 
+        Column values are measurements
+        rows can be very wide
+      
+      Event Sourcing:
+        Persist State Cahnge Event
+        Do not persist present state
+        all writes are immuteable
+        play back the tape to rehydrate the app
+      
+Practice:
+      People
+      Ability to calim a profile by verifying with something you have
+      this is about privacy controls
+      Queries:
+        Enter email address or phone number
+        Record that the caliming has taken place
+        Record what the user wants to do with the claiming
+        keep a copy of the old record (pre-claiming)
+      Columns:
+        Column family with key = email address
+          A foreign key column pointing tothe contact entity record
+        Column family: contacts
+          some rich set of columns
+        Column family : Calimed Conatact
+        Column family : PublicContact
+           ColumnFaimlyasIndex: PublicContactByEmail
+           ColumnFaimlyasIndex: PublicContactByPhone
+        ColumnFamily to log transctions
+           Claimed event
+           Modification to the contact record
+ 
+ CQL
+       Update Contacts SET name = 'Tim Berglund'
+          WHERE KEY = XXXXXXXXXXX
+       
+       Update Monkeys
+           USING CONSISTENCY EACH_QUORUM
+           SET emotion = 'Angry'
+               name    = 'Baby Boss'
+           Where Key = 'xxxxxxxx'
+            
+      SELECT * FROM Contacts
+          WHERE KEY = XXXXXXXXXXXX
+          
+      SELECT FIRST 10000 FROM Temperatures
+        Where KEY = 8888888888
+        
+Cluster
+    Need do more, make cluster bigger
+    Scale Horizonally 
+      Dynamo-style distributed hash table work
+          Hash Ring: consistant hashing, peer to peer
+      Rplicatoin:
+          replication factor(N)
+          replica placement stragegy:
+              Simple 
+              Network topology stragegy 
+          Client Connection
+              Client can connect any node in the ring and write on any one(let the server handle who had the data)
+          Write Data:
+              Coordinator Node
+              Hint handoff: node goes down, keep that write locally perisitant to coordinator's desk until its come backup 
+              or other node reponed.
+              But that might be returned as successful write(oops we lost the consistancy here)
+              Write Consisitancy:
+                   Any: At least one node (hinted handoff allowed)
+                   ONE: at least one node (No HInt allowed)
+                   Quorum : Wrtiiten to (N+1)/2 REPLICA
+                   All
+          Reading Date:
+                  https://blog.knoldus.com/the-curious-case-of-cassandra-reads/
+                  Digest:
+                    A "digest" query is like a read query except that instead of the receiving node actually returning the data, it only returns a digest (hash) of the would-be data.
+                    The intent of submitting a digest query is to discover whether two or more nodes agree on what the current data is, without sending the data over the network. In particular for large amounts of data, this is a significant saving of bandwidth cost relative to sending the full data response.
+                    Keep in mind that the cost of potentially going down to disk, and most or all of the CPU cost, associated with a query will still be taken on nodes that receive digest queries. The optimization is only for bandwidth.
+                  read inconsitance: coordinator see if the nodes data is outdated and issues a read repair
+                  snatch:  
+                      Node knows the localality for other nodes: certian nodes are close and others are far away
+                      Snitches determine the proximity of Cassandra nodes. It determines which datacenters and racks nodes belong to It gathers network topology information and tries to route the request efficiently.
+                          By default, a dynamic snitch layer is used for all snitches. It monitors the read performance and routes the request away from the slow nodes. It’s recommended to keep dynamic snitches enabled for most deployments.
+          
+          Gossip:
+                  Deccentrailzed way for cluster to konw him self
+                  Probabilitistic
+                  https://www.edureka.co/blog/gossip-protocol-in-cassandra/
+                  
+
+Node -> log-structured storage
+        Commit Log
+          Writes go here first
+          Serializatoin of mutation 
+          synchornous
+          guarantee that the write has to on the disk
+          you do not read from the commit log
+          Append-only
+          One active log per server
+        
+        Memtable:
+          Accumulates write in memory 
+          Tunable memory usage
+          Flushed to sstable when full
+        
+        SSTABLE:
+          Memtables get flushed here
+          one or more per column family 
+          immuntable
+          need occasional "COMPACTION"
+              Merge and sort sstables
+              Write one clean sstable file
+              Node still operates
+              Still be able to read while compacting 
+         
+         Read on Disk
+         https://docs.datastax.com/en/cassandra/2.1/cassandra/dml/dml_write_path_c.html
+            easy case : Nodes read the memtable, then sstables
+            hard case : search all sstables
+            Bloomfilter
+         
+        
+          
+            
