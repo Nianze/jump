@@ -20,3 +20,4 @@
 * Design pattern, C++, [course umich](http://umich.edu/~eecs381/)
 * (More) Effective (Modern) C++
 * BB tech stack
+* Block chain
