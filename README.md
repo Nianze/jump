@@ -6,11 +6,14 @@
 * [061518: Memcache](meetup/180615-memcache)
 * [062918: Dynamo](meetup/180629-dynamo)
 * [072018: BigTable](meetup/180720-bigtable)
-* [080318: Cassandra](meetup/080318-cassandra)
+* [080318: Cassandra](meetup/180803-cassandra)
 
 ### Tech notes
 
 * [Consistent hashing](notes/tech-note-consistent-hashing)
+* [Retransmission timer in TCP](notes/tech-note-tcp-retranx-timer)
+* [Log structured merge tree](notes/tech-note-log-structured-merge-tree)
+
 
 ### Scheduled
 
