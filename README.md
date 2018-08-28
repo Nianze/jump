@@ -7,7 +7,7 @@
 * [062918: Dynamo](meetup/180629-dynamo)
 * [072018: BigTable](meetup/180720-bigtable)
 * [080318: Cassandra](meetup/180803-cassandra)
-* [081825: DesignUber](meetup/180818-uber)
+* [081818: DesignUber](meetup/180818-uber)
 
 ### Tech notes
 
