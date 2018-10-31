@@ -7,6 +7,7 @@
 * [062918: Dynamo](meetup/180629-dynamo)
 * [072018: BigTable](meetup/180720-bigtable)
 * [080318: Cassandra](meetup/180803-cassandra)
+* [081818: DesignUber](meetup/180818-uber)
 
 ### Tech notes
 
@@ -14,9 +15,7 @@
 * [Retransmission timer in TCP](notes/tech-note-tcp-retranx-timer)
 * [Log structured merge tree](notes/tech-note-log-structured-merge-tree)
 
-
 ### Scheduled
-
 
 ### Ideas
 
