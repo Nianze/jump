@@ -1,0 +1,190 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\begin{document}
+
+\title{Intro to blockchain}
+% \subtitle{With the bitcoin application}
+\author{Zhehao Wang}
+\date{Oct 2018}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Symmetric cryptography}
+
+Consider symmetric cryptoraphy, where
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{symmetric-encryption}
+\end{figure}
+
+The problem: how do I securely transfer \textcolor{blue}{$key~K$} over the network?
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Asymmetric cryptography, RSA algorithm}
+
+Find 3 very large positive integers $e$, $d$, $n$ s.t.
+$$
+(m^e)^d \equiv m ~ (\text{mod} ~ n), ~ ~ \forall m,~ 0 \leq m \le n
+$$
+Knowing $e$, $n$ or even $m$ it's extremely hard to find $d$.
+
+\begin{itemize}
+    \item Public key: $n$, $e$
+    \item Private key: $n$, $d$
+    \item Message: $m$
+\end{itemize}
+
+Operations:
+\begin{itemize}
+    \item Encryption(m): $c = m^e ~ (\text{mod} ~ n)$
+    \item Decryption(c): $m' = c^d ~ (\text{mod} ~ n) = (m^e)^d ~ \text{mod} ~ n$, $m' = m ~ (\text{mod} ~ n)$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{RSA algorithm, example}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{asymmetric-encryption}
+\end{figure}
+
+Anyone who wants to talk to Bob can retrieve Bob's public key, use it to encrypt the message, and know that only holder of the corresponding private key can decrypt.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{RSA algorithm in practice}
+
+In practice, key pairs are much longer.
+\begin{lstlisting}[language=bash]
+  $ ssh-keygen -t rsa -b 4096
+\end{lstlisting}
+
+Each key pair corresponds with an \textbf{identity}.
+
+\vspace{0.2in}
+
+The two operations:
+\begin{itemize}
+    \item {Encryption/Decryption}: Alice uses Bob's public key to encrypt, Bob uses his private key to decrypt
+    \item {Signing/Validation}: Alice uses her own private key to sign, others use Alice's public key to verify
+\end{itemize}
+
+\vspace{0.2in}
+Vs symmetric encryption: more computation, but solves the problem of key transfer (and many others)
+
+\vspace{0.2in}
+Related concepts: digital signature, certificate, public key infrastructure
+
+\end{frame}
+
+\begin{frame}
+\frametitle{To design cryptocurrency}
+
+Imagine designing a cryptocurrency
+\begin{itemize}
+    \item An account is a public/private key pair!
+    \item If I pay someone (a public key identity), I sign with my private key: others can verify \textit{I} made the payment, and I cannot refute later on
+\end{itemize}
+
+But how does anyone know I have enough money left to make the payment? \textit{Double spending}
+\begin{itemize}
+    \item The \textbf{centralized} way: we all agree on (and preinstall) having one party to trust, who keeps track of everyone's account balances
+    \item The \textbf{decentralized} way: is it possible to have \textit{all} of us keep track of account balances together?
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{To design cryptocurrency - cont}
+
+Design considerations:
+\begin{itemize}
+    \item Distributed
+    \item Trustless, no a-prori trust relationship established
+    \item Consensus, everyone agrees on account balances
+\end{itemize}
+
+\vspace{0.3in}
+Why is this problem unique:
+
+\begin{itemize}
+\item I don't trust anyone I talk to! (think Raft, dynamo, etc) But we can still agree on something.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Distributed trustless consensus - intuition}
+
+Distributed consensus: leadership election, and \textbf{state-machine replication}
+(think raft)
+
+\vspace{0.2in}
+If we can agree on the entire history of transactions, we would know if someone is trying to double spend.
+(think log structured merge tree (e.g. Cassandra) / journaling file system / git)
+
+\vspace{0.2in}
+To agree on the history,
+
+\begin{itemize}
+    \item what if we assume: there are more peers in the network who are honest, than those who are not
+    \item we can have everyone tell everyone else their view of the entire history, and hope they converge...
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Blockchain in bitcoin whitepaper}
+
+Blockchain makes a different assumption
+\begin{itemize}
+    \item \textbf{honest peers own more computation power than those who are dishonest}
+\end{itemize}
+
+\vspace{0.2in}
+
+Consequently, if it takes computation power to grow the history, then honest peers can grow the history faster than dishonest ones
+\begin{itemize}
+    \item Peers agree on \textbf{trusting the longest chain}, and grow based on that
+    \item In order to grow the history, peers perform a \textbf{proof of work}, which is computationally non-trivial
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Building a block}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.85\textwidth]{building-a-block}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Growing a chain}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of work}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Mining and incentive}
+
+\end{frame}
+
+\end{document}
