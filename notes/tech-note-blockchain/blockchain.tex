@@ -119,7 +119,8 @@ Considerations:
 Why is this problem unique:
 
 \begin{itemize}
-  \item I don't trust anyone I talk to! (think Raft, dynamo, etc) But we can still agree on something.
+  \item I don't trust anyone I talk to! (think Raft, dynamo, etc)
+  \item But we can still agree on something
 \end{itemize}
 
 \end{frame}
@@ -127,12 +128,11 @@ Why is this problem unique:
 \begin{frame}
 \frametitle{Distributed trustless consensus - intuition}
 
-Distributed consensus: leadership election, and \textbf{state-machine replication}
-(think raft)
+Distributed consensus: leadership election, and \textbf{state-machine replication}\footnote{Think Raft consensus algorithm}
 
 \vspace{0.2in}
-If we can agree on the entire history of transactions, we would know if someone is trying to double spend.
-(think log structured merge tree (e.g. Cassandra) / journaling file system / git)
+If we can agree on the entire history of transactions (state machine), we know if someone is trying to double spend.
+\footnote{Think log structured merge tree (e.g. writes in Cassandra) / journaling file system / git}
 
 \vspace{0.2in}
 To agree on the history,
@@ -145,7 +145,7 @@ To agree on the history,
 \end{frame}
 
 \begin{frame}
-\frametitle{Blockchain in bitcoin whitepaper}
+\frametitle{Blockchain, introduction\footnote{As in the classic bitcoin whitepaper, since the field has seen lots of divergents}}
 
 Blockchain makes a different assumption
 \begin{itemize}
@@ -175,7 +175,7 @@ Consequently, if it takes computation power to grow the history, then honest pee
 \begin{frame}
 \frametitle{Proof of work}
 
-Find a nonce value to attach to a block, such that the hash of the entire block has an agreed number of $0$s at its end
+After assembling $X$ transactions in a block\footnote{$X$ depends on the size of transactions, and is usually above 1000 in bitcoin}, find a nonce value to attach to the block, $s.t.$ the hash\footnote{E.g. sha256} of the entire block has an agreed number of $0$s at its end
 \begin{itemize}
   \item A block is only considered valid and complete, if one such nonce is attached
   \item No known efficient algorithm exists to find one such value, (mostly) trials
@@ -186,7 +186,7 @@ Find a nonce value to attach to a block, such that the hash of the entire block 
 Proof-of-work "verifies" a block (in turn, grows a chain)
 
 \vspace{0.2in}
-Peers who carry out proof-of-work are called miners.
+Peers who carry out proof-of-work are called \textbf{miners}.
 
 \end{frame}
 
@@ -227,17 +227,18 @@ How are new coins introduced to the system?
 
 What if two blocks are created at the same time?
 \begin{itemize}
-  \item A temporary fork. We can introduce an ordering mechanism, or miners may work on different forks, until one gets longer than the other and propagates.
+  \item A temporary fork. Can introduce an ordering mechanism, or miners may work on different forks, until one gets longer than the other and propagates.
 \end{itemize}
 
-\vspace{0.2in}
+\vspace{0.1in}
 As the system progresses,
 \begin{itemize}
-  \item Number of $0$s to satisfy proof-of-work increases (world's computation power increases)
-  \item Mining reward \textbf{halves} (how to incentivize afterwards? Transaction fee)
+  \item Number of $0$s to satisfy proof-of-work increases \footnote{The system aims to create 1 new block every 10 minutes, and it does so by adjusting the difficulty of proof-of-work}
+  \item Mining reward \textbf{halves} every $X$ blocks\footnote{Current reward: 12.5 btc, $X = 210000$. How to incentivize afterwards: transaction fee}
+  \item A hard fork could be made for backward incompatible upgrade, or confirmed compromise
 \end{itemize}
 
-\vspace{0.2in}
+\vspace{0.1in}
 Max number of coins is fixed (inflation-free!)
 $$
 \lim\limits_{n \to \infty}{\sum_{i = 1}^{n}{\frac{1}{2^i}}} = 1
@@ -277,12 +278,12 @@ Distributed and trustless come at a cost
 \end{itemize}
 
 \vspace{0.2in}
-But also at an advantage
+But also with advantages
 
 \begin{itemize}
   \item Less a-priori
   \item Anonymous
-  \item Mathematically hard to tamper / counterfeit (?)
+  \item Mathematically hard to tamper / counterfeit
 \end{itemize}
 
 \end{frame}
@@ -303,14 +304,39 @@ But also at an advantage
 \begin{frame}
 \frametitle{Extensions - smart contract}
 
+With bitcoin, the \textit{actions} we record on the chain are transactions.
 
+They can be anything else.
+
+\vspace{0.2in}
+
+\begin{itemize}
+  \item Casting a vote for a presidential candidate
+  \item Publishing a blog post
+  \item ...
+\end{itemize}
+
+\vspace{0.2in}
+How do we express \textit{anything}?
+
+The ethereum framework and Solidity programming language.
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Summary}
 
+\begin{itemize}
+  \item Public key cryptography
+  \item Distributed trustless consensus
+  \item Computation power assumption
+  \item Proof-of-work
+\end{itemize}
 
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
 
 \end{frame}
 
