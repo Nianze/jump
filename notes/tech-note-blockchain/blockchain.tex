@@ -94,7 +94,7 @@ Related concepts: digital signature, certificate, public key infrastructure
 Imagine designing a cryptocurrency
 \begin{itemize}
   \item An account is a public/private key pair!
-  \item If I pay someone (a public key identity), I sign with my private key: others can verify \textit{I} made the payment, and I cannot refute later on
+  \item If I pay someone (a public key identity), I sign with my private key: others can verify \textit{I} made the payment, and I cannot repudiate later on
 \end{itemize}
 
 But how does anyone know I have enough money left to make the payment? \textit{Double spending}
@@ -119,7 +119,7 @@ Considerations:
 Why is this problem unique:
 
 \begin{itemize}
-  \item I don't trust anyone I talk to! (think Raft, dynamo, etc)
+  \item I don't trust anyone I talk to
   \item But we can still agree on something
 \end{itemize}
 
@@ -163,16 +163,6 @@ Consequently, if it takes computation power to grow the history, then honest pee
 \end{frame}
 
 \begin{frame}
-\frametitle{Building a block}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.85\textwidth]{building-a-block}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}
 \frametitle{Proof of work}
 
 After assembling $X$ transactions in a block\footnote{$X$ depends on the size of transactions, and is usually above 1000 in bitcoin}, find a nonce value to attach to the block, $s.t.$ the hash\footnote{E.g. sha256} of the entire block has an agreed number of $0$s at its end
@@ -187,6 +177,16 @@ Proof-of-work "verifies" a block (in turn, grows a chain)
 
 \vspace{0.2in}
 Peers who carry out proof-of-work are called \textbf{miners}.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Building a block}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.85\textwidth]{building-a-block}
+\end{figure}
 
 \end{frame}
 
@@ -249,11 +249,10 @@ $$
 \begin{frame}
 \frametitle{Tamper resistance and privacy}
 
-Temper resistance
+Assume dishonest peers work together to produce proof-of-work for a block in which a transaction source account double spends
 \begin{itemize}
-  \item Assume dishonest peers work together to produce proof-of-work for a block in which a transaction source account double spends
-  \item Dishonest peers have to grow the chain faster than the honest ones, so that the honest ones use their chain
-  \item Subverting a previous block in the chain gets exponentially more difficult (grow everything afterwards, and faster)
+  \item Dishonest peers have to grow the chain faster than the honest ones, so that the honest ones use their chain (contrary to assumption)
+  \item Subverting an existing block in the chain gets exponentially more difficult (grow everything afterwards, and faster)
   \item If you have this much computation power, it'd be more in your interest to mine, rather than to subvert
 \end{itemize}
 
@@ -281,7 +280,7 @@ Distributed and trustless come at a cost
 But also with advantages
 
 \begin{itemize}
-  \item Less a-priori
+  \item Minimal a-priori
   \item Anonymous
   \item Mathematically hard to tamper / counterfeit
 \end{itemize}
