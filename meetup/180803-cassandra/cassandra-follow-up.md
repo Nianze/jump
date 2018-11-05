@@ -30,5 +30,16 @@ Such queries are efficient:
 
 **Q: what is [partition summary](https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlAboutReads.html) and how does it help?**
 
-A: (As Pranav suggested) partition summary is an in-memory sampled partition index (sorted by hash(partition key) and lives on disk).
+A: (As Pranav suggested) partition summary is an in-memory sampled partition index (sorted by hash(partition key) and lives on disk) per SSTable.
 Each summary samples one partition index, mapping to the file offset of the sampled keys, such that when trying to read from a particular key, only a scan on a small range in the file is needed (as identified by the partition summary).
+
+```
+data models: column family, super column, super column family, difference and why?
+
+hinted handoff in write
+
+node departure in Chord
+
+The key in memtable is a primary key or the partition key?
+You do need to query SStable in regular reads
+```

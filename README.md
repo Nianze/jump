@@ -8,12 +8,10 @@
 * [072018: BigTable](meetup/180720-bigtable)
 * [080318: Cassandra](meetup/180803-cassandra)
 * [081818: DesignUber](meetup/180818-uber)
+* [101918: Spark]
+* [110218: Blockchain](meetup/110218-blockchain)
 
 ### Tech notes
-
-* [Consistent hashing](notes/tech-note-consistent-hashing)
-* [Retransmission timer in TCP](notes/tech-note-tcp-retranx-timer)
-* [Log structured merge tree](notes/tech-note-log-structured-merge-tree)
 
 ### Scheduled
 
