@@ -10,8 +10,7 @@
 * [081818: DesignUber](meetup/180818-uber)
 * [101918: Spark]
 * [110218: Blockchain](meetup/110218-blockchain)
-
-### Tech notes
+* [110918: Knapsack problem](meetup/181109-Knapsack)
 
 ### Scheduled
 
@@ -20,4 +19,3 @@
 * Design pattern, C++, [course umich](http://umich.edu/~eecs381/)
 * (More) Effective (Modern) C++
 * BB tech stack
-* Block chain
