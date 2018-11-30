@@ -11,7 +11,7 @@
 * [101918: Spark](meetup/101918-spark)
 * [110218: Blockchain](meetup/110218-blockchain)
 * [110918: Knapsack problem](meetup/181109-Knapsack)
-* [112918: Ethereum](meetup/112918-blockchain)
+* [112918: Ethereum](meetup/110218-blockchain)
 
 ### Scheduled
 
