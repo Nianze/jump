@@ -1,0 +1,61 @@
+Apache Spark
+
+Background - 
+Initially developed at UC Berkeley. 
+It is an open-source distributed general-purpose cluster-computing framework.
+It provides an interface for programming entire clusters with implicit data parallelism and fault tolerance.
+Founders went on to form company Databricks that has raised ~ $250 million till date.
+
+Motivation - 
+Iterative algorithms eg: Linear Regression, Interactive Data Mining eg: jupyter notebooks
+Requires result reuse and speed, thus in memory calculations better
+Current tech focuses on abstraction of processing resources (parallelism), does not explicitly model memory eg: MapReduce
+
+Introduction - 
+Objective of Spark - parallel data structures with intermediate result persistence, fault tolerance, partitioning to optimize data placement, expressiveness, faster speed
+
+Abstraction (RDD) - 
+partitioned, read only, immutable
+Immutable, data source -> rdd OR rdd -> rdd
+Lazy Eval, often rdd stored as lineage (or pipeline), eg: map,filter,reduce (transformations) vs collect,count,save (actions)
+Partition key, helps localize actions/transformations
+Persistence, primary or secondary storage, caching with priority, etc.
+
+Fault tolerance - 
+Fine grained vs Coarse grained memory model,
+KV Pair vs Spark,
+Data replication/logs vs Recovery using Pipelining (also called lineage)
+Checkpointing during execution (policies include after wide dependency, using scheduling data, etc.)
+
+Expressive - 
+MapReduce, SQL, etc.
+Discuss map, flatMap, filter, reduce etc.
+Code required smaller
+
+Partitioning optimizations - 
+Data is partition by a key
+Partitioned used to group related data together for speed/efficiency
+Narrow dependency vs Wide dependency
+
+Faster Speed - 
+Tasks scheduled based on data locality using partitions
+Straggler Mitigation, backup lineage, dividing into subtasks, etc.
+Iterative app, 20x
+Real world analytics report, 40x
+
+Cons - 
+Coarse grained memory model
+Suitable only for bulk operations
+
+Programming Interface - 
+Driver (Lineage) vs Workers (Partitions)
+
+Job Scheduling - 
+Divide job into stages
+Each stage contains as many narrow dependencies as possible
+Boundaries of stages have wide dependencies (usually require shuffle)
+
+Misc - 
+Figure 1 for lineage example
+Table 1 for comparison with Dist Shared Mem
+Section 3.2 for Example Apps

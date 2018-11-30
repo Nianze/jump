@@ -8,9 +8,10 @@
 * [072018: BigTable](meetup/180720-bigtable)
 * [080318: Cassandra](meetup/180803-cassandra)
 * [081818: DesignUber](meetup/180818-uber)
-* [101918: Spark]
+* [101918: Spark](meetup/101918-spark)
 * [110218: Blockchain](meetup/110218-blockchain)
 * [110918: Knapsack problem](meetup/181109-Knapsack)
+* [112918: Ethereum](meetup/112918-blockchain)
 
 ### Scheduled
 
